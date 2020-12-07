@@ -1,0 +1,340 @@
+<html>
+	<head>
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous"></script>
+	</head>
+
+	<body>
+		<!-- BOOM example...
+1 ; 0 A
+2 C A 10 6 6 3
+3 + 1 A A
+4 P A
+5 T 2
+6 N
+7 A BOOM!
+8 F
+		-->
+
+		<!--
+		<textarea id="input" rows="10">
+1 Z A 1 10
+2 P A
+6 E
+7 A BOOM!
+8 F
+		</textarea>
+
+		<button id="run">Run!</button>
+
+		<textarea id="output" rows="15" style="float:right"></textarea>
+		-->
+
+		<div id="term"></div>
+	</body>
+
+	<script>
+		var term = new Terminal();
+		term.open(document.getElementById("term"));
+		term.write("DOPE20\r\nReady\r\n\r\n");
+
+		var vars = {
+			"E": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			"F": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			"G": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			"H": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		};
+
+		var ops = {
+			"+": function(args, mask){ //Add
+				var a = getValue(args[0], mask[0]);
+				var b = getValue(args[1], mask[1]);
+
+				setValue(args[2], mask[2], a + b);
+			},
+			"-": function(args, mask){ //Subtract
+				var a = getValue(args[0], mask[0]);
+				var b = getValue(args[1], mask[1]);
+
+				setValue(args[2], mask[2], a - b);
+			},
+			".": function(args, mask){ //Multiply
+				var a = getValue(args[0], mask[0]);
+				var b = getValue(args[1], mask[1]);
+
+				setValue(args[2], mask[2], a * b);
+			},
+			"/": function(args, mask){ //Divide
+				var a = getValue(args[0], mask[0]);
+				var b = getValue(args[1], mask[1]);
+
+				setValue(args[2], mask[2], a / b);
+			},
+			";": function(args, mask){ //Set value
+				var a = getValue(args[0], mask[0]);
+				setValue(args[1], mask[1], a);
+			},
+			"SQR": function(args, mask){
+				var a = getValue(args[0], mask[0]);
+				setValue(args[1], mask[1], Math.sqrt(a));	
+			},
+			"EXP": function(args, mask){
+				var a = getValue(args[0], mask[0]);
+				setValue(args[1], mask[1], Math.exp(a));	
+			},
+			"LOG": function(args, mask){
+				var a = getValue(args[0], mask[0]);
+				setValue(args[1], mask[1], Math.log(a));	
+			},
+			"SIN": function(args, mask){
+				var a = getValue(args[0], mask[0]);
+				setValue(args[1], mask[1], Math.sin(a));	
+			},
+			"C": function(args, mask){ //Conditional jump
+				var a = getValue(args[0], mask[0]);
+				var b = getValue(args[1], mask[1]);
+
+				var l1 = getValue(args[2], mask[2]);
+				var l2 = getValue(args[3], mask[3]);
+				var l3 = getValue(args[4], mask[4]);
+
+				if(a > b){
+					return l1;
+				}else if(a == b){
+					return l2;
+				}else if(a < b){
+					return l3;
+				}
+			},
+			"T": function(args, mask){ //jump To line
+				var a = getValue(args[0], mask[0]);
+				return a;
+			},
+			"P": function(args, mask){ //Print value
+				var a = getValue(args[0], mask[0]);
+				output(a);	
+			},
+			"A": function(args, mask){ //Print label, aka string literal
+				var a = getValue(args[0], mask[0]);
+				output(a);
+			},
+			"N": function(args, mask){ //Print newline
+				output("\r\n");
+			},
+			"J": async function(args, mask){ //Take keyboard input => var
+				term.write(" -->> ");
+				await input();
+				setValue(args[0], mask[0], parseFloat(buffer));
+			},
+			"Z": function(args, mask, num){ //Attempt at simple for loop
+				var a = args[0];
+				var b = getValue(args[1], mask[1]);
+				var c = getValue(args[2], mask[2]);
+
+				if(loops.length == 0 || loops[loops.length - 1] != num){ //Is this loop new?
+					setValue(a, mask[0], b); //Set out iterator to the initial value
+					loops.push(num); //Save over the line number of the loop
+				}else{ //We are iterating
+					setValue(a, mask[0], getValue(a, mask[0]) + 1); //We can only go up, them's the rules
+
+					if(vars[a] >= c){ //Is this the last iteration?
+						loops.pop(); //Remove us from the loop list
+					}
+				}
+			},
+			"E": function(args, mask){ //End of loop block
+				if(loops.length > 0){
+					return loops[loops.length - 1];
+				}
+			}
+		};
+
+		var lines = [
+			,
+			"; 10 B",
+			"Z A 1 10",
+			"P B",
+			"- B 1 B",
+			"N",
+			"E",
+			"A BOOM!",
+			"F"
+		];
+
+		var loops = [];
+		var sep = " "; //Token seporator, will eventually switch to '
+
+		term.write(" > ");
+
+		var buff = ""; //Global buffer
+
+		controlLoop(); //I hate everything about how JS works...
+
+		async function controlLoop(){
+			while(true){
+				await input();
+				console.log(buff);
+				handle(buff);
+			}
+		}
+
+		function handle(buff){
+			//Deal with commands. This isn't in the spec but it's my implementation...
+			//	...so let's get creative
+			if(buff.match(/^[1-9]/)){ //We have a line number, load it in
+				var ts = buff.split(sep);
+				lines[ts.shift()] = ts.join(sep);
+			}else if(buff.toUpperCase() == "LIST"){
+				term.write(lines.map(function(d, i){
+					return i + " " + d;
+				}).join("\r\n") + "\r\n");
+			}else if(buff.toUpperCase() == "RUN"){
+				run();
+			}else if(buff.toUpperCase() == "NEW"){
+				lines = [];
+			}else{
+				runLine(1, buff);
+			}
+
+			term.write("\r\n > ");
+		}
+
+		async function input(cb){
+			buff = "";
+
+			var {data} = await new Promise(resolve => {
+				var keyHandler = term.onKey(function(d){
+					var key = d.key;
+
+					if(key.charCodeAt(0) == 13){
+						term.write("\r\n");
+						keyHandler.dispose();
+						resolve(buff);
+						return buff;
+					}else if(key.charCodeAt(0) == 127){ //It's a backspace
+						if(buff.length > 0){
+							buff = buff.slice(0, -1);
+							term.write('\x1b[D \x1b[D');
+						}
+					}else{
+						term.write(key);
+						buff += key;
+					}
+				});
+			});
+
+			return data;
+
+			/*var dispose = term.onKey(function(d){
+				var key = d.key;
+
+				if(key.charCodeAt(0) == 13){
+					term.write("\r\n");
+					dispose.dispose();
+					return buff;
+					//cb(buff);
+				}else if(key.charCodeAt(0) == 127){ //It's a backspace
+					if(buff.length > 0){
+						buff = buff.slice(0, -1);
+						term.write('\x1b[D \x1b[D');
+					}
+				}else{
+					term.write(key);
+					buff += key;
+				}
+
+			});*/
+		}
+
+		function run(){
+			var n = 1;
+
+			while(lines[n] != "F" && n < lines.length){ //Run until FINAL or no more lines
+				console.log("Running Line: " + n);
+				n = runLine(n, lines[n]);
+			}
+		}
+
+		function getValue(token, mask){	
+			if(mask == "c"){ //Deal with const value
+				return parseFloat(token);
+			}else if(mask == "s"){ //Grab a scalar var
+				return vars[token];
+			}else if(mask == "v"){ //Grab a vector... kinda gross...
+				var [t, i] = token.split(/[\[\]]/);
+
+				iMask = makeMask([i])[0];
+				if(iMask == "s"){
+					i = getValue(i, iMask);	
+				}
+
+				return vars[t][i];
+			}else if(mask == "l"){
+				return token;
+			}
+		}
+
+		function setValue(token, mask, val){
+			if(mask == "s"){ //Set a scalar
+				vars[token] = val;
+			}else if(mask == "v"){ //Then we have a vector
+				var [t, i] = token.split(/[\[\]]/);
+
+				iMask = makeMask([i])[0];
+				if(iMask == "s"){
+					i = getValue(i, iMask);	
+				}
+
+				vars[t][i] = val;
+			}
+		}
+
+		function output(d){
+			term.write("" + d);
+		}
+
+		function runLine(num, line){
+			//Split to tokens, should be by ' but using space for now
+			var t = line.split(sep);
+			var op = t.shift();
+
+			if(ops[op]){ //Is this a valid operation?
+				//Lets make a mask...
+				var mask = makeMask(t);
+				console.log(mask);
+
+				var nextLine = ops[op](t, mask, num);
+				console.log(vars);
+
+				if(!nextLine || typeof nextLine !== "number"){
+					nextLine = num + 1;
+					
+					//Deal with non-continous line numbers... :(
+				}else{
+					console.log("Jumping to: " + nextLine);
+				}
+
+				return nextLine;
+			}else{
+				//Throw an error
+				console.log("Not an op");
+			}
+		}
+
+		function makeMask(args){
+			return args.map(function(t){
+				if(t.match(/^[A-Z][0-9]?$/)){
+					return "s"; //It's a avriable, ops will understand
+				}else if(t.match(/^[0-9\.\-\+]/)){
+					return "c"; //It's a constant... don't use restrictions for now
+				}else if(t.match(/^[EFGH]\[.*\]$/)){
+					return "v" //It's a vector
+				}else{
+					return "l"; //It's a label
+				}
+			});
+		}
+	</script>
+</html>
