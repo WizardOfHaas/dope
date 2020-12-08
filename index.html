@@ -5,48 +5,28 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	</head>
 
 	<body>
-		<!-- BOOM example...
-1 ; 0 A
-2 C A 10 6 6 3
-3 + 1 A A
-4 P A
-5 T 2
-6 N
-7 A BOOM!
-8 F
-		-->
-
-		<!--
-		<textarea id="input" rows="10">
-1 Z A 1 10
-2 P A
-6 E
-7 A BOOM!
-8 F
-		</textarea>
-
-		<button id="run">Run!</button>
-
-		<textarea id="output" rows="15" style="float:right"></textarea>
-        -->
-        
 		<div class="container">
-			<div class="row">
-                <div class="col-sm-8">
+			<div class="row" style="background-color:black;color:grey">
+                <div class="col-md-8 col-sm-12">
                     <div id="term"></div>
                 </div>
 
-                <div class="col-sm-4">
-                    <h5>Debugger?</h5>
+                <div class="col-md-4 col-sm-12">
+                    <a class="btn" data-toggle="collapse" href="#debug">
+						<div><h5>Variables...</h5></div>
+					</a>
+
+					<div id="debug" class="collapse"></div>
                 </div>
 			</div>
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>Load Examples</h3>
+                    <h3>Programming DOPE</h3>
                 </div>
             </div>
 
@@ -116,6 +96,10 @@
 				setValue(args[2], mask[2], a / b);
 			},
 			";": function(args, mask){ //Set value
+				if(mask[1] == "c"){
+					return -1;
+				}
+	
 				var a = getValue(args[0], mask[0]);
 				setValue(args[1], mask[1], a);
 			},
@@ -243,7 +227,10 @@
 			}else if(buff.toUpperCase() == "NEW"){
 				lines = [];
 			}else{
-				runLine(1, buff);
+				var n = runLine(1, buff);
+				if(n == -1){
+					error();
+				}
 			}
 
 			term.write("\r\n > ");
@@ -281,7 +268,14 @@
 
 			while(lines[n] != "F" && n < lines.length){ //Run until FINAL or no more lines
 				console.log("Running Line: " + n);
-				n = runLine(n, lines[n]);
+				var next = runLine(n, lines[n]);
+					
+				if(next == -1){
+					error("LINE " + n);
+					break;
+				}
+
+				n = next;
 			}
 		}
 
@@ -323,6 +317,22 @@
 			term.write("" + d);
 		}
 
+		function showVars(){
+			$("#debug").html("<ul>");
+
+			for(const [key, value] of Object.entries(vars)){
+				if(!key.match(/^[EFGH]$/)){
+					$("#debug").append("<li>" + key + " -> " + value + "</li>");
+				}
+			}
+
+			["E", "F", "G", "H"].forEach(function(i){
+				$("#debug").append("<li>" + i + " -> " + vars[i].join(",") + "</li>");
+			});
+
+			$("#debug").append("</ul>");
+		}
+
 		function runLine(num, line){
 			//Split to tokens, should be by ' but using space for now
 			var t = line.split(sep);
@@ -334,7 +344,7 @@
 				console.log(mask);
 
 				var nextLine = ops[op](t, mask, num);
-				console.log(vars);
+				showVars();
 
 				if(!nextLine || typeof nextLine !== "number"){
 					nextLine = num + 1;
@@ -347,8 +357,12 @@
 				return nextLine;
 			}else{
 				//Throw an error
-				console.log("Not an op");
+				error();
 			}
+		}
+
+		function error(msg = null){
+			term.write("SYNTAX ERROR" + (msg ? ": " + msg : ""));
 		}
 
 		function makeMask(args){
