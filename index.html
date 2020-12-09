@@ -4,8 +4,9 @@
 		
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	</head>
 
 	<body>
@@ -21,6 +22,7 @@
                     <div id="term"></div>
                 </div>
 
+                <!--
                 <div class="col-md-4 col-sm-12">
                     <a class="btn" data-toggle="collapse" href="#debug">
 						<div><h5>Variables...</h5></div>
@@ -28,234 +30,216 @@
 
 					<div id="debug" class="collapse"></div>
                 </div>
+                -->
 			</div>
 
             <div class="row">
                 <div class="col-sm-12">
                     <h3>Programming DOPE</h3>
 
-                    <p>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <td>Instruction</td>
-                                    <td>Arg 1</td>
-                                    <td>Arg 2</td>
-                                    <td>Arg 3</td>
-                                    <td>Arg 4</td>
-                                    <td>Arg 5</td>
-                                    <td>Description</td>
-                                </tr>
-                            </thead>
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Instruction</th>
+                                <th>Arg 1</th>
+                                <th>Arg 2</th>
+                                <th>Arg 3</th>
+                                <th>Arg 4</th>
+                                <th>Arg 5</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
 
-                            <tbody>
-                                <tr>
-                                    <td>+</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>C = A + B</td>
-                                </tr>
-
-                                <tr>
-                                    <td>-</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>C = A - B</td>
-                                </tr>
-
-                                <tr>
-                                    <td>-</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>C = A - B</td>
-                                </tr>
-
-                                <tr>
-                                    <td>*</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>C = A * B</td>
-                                </tr>
-                                    
-                                <tr>
-                                    <td>/</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>C = A / B</td>
-                                </tr>
-
-                                <tr>
-                                    <td>;</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>B = A</td>
-                                </tr>
-
-                                <tr>
-                                    <td>SQR</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>B = SQRT(A)</td>
-                                </tr>
-
-                                <tr>
-                                    <td>LOG</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>B =ln(A)</td>
-                                </tr>
-
-                                 <tr>
-                                    <td>EXP</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>B =e^A</td>
-                                </tr>
-
-                                <tr>
-                                    <td>SIN</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>B = SINE(A)</td>
-                                </tr>
-
-                                <tr>
-                                    <td>C</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>L1</td>
-                                    <td>L2</td>
-                                    <td>L3</td>
-                                    <td>
-                                        Conditional Jump <br/>
-                                        If(A > B) jump to L1 <br/>
-                                        If(A == B) jump to L2 <br/>
-                                        If(A < B) jump to L3 <br/>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>T</td>
-                                    <td>L</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Jump TO line L</td>
-                                </tr>
-
-                                <tr>
-                                    <td>A</td>
-                                    <td>X</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Print "label" X, only way to print a string literal</td>
-                                </tr>
+                        <tbody>
+                            <tr>
+                                <td>+</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>C = A + B</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>C = A - B</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>C = A - B</td>
+                            </tr>
+                            <tr>
+                                <td>*</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>C = A * B</td>
+                            </tr>
                                 
-                                <tr>
-                                    <td>P</td>
-                                    <td>A</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Print the value of A</td>
-                                </tr>
-
-                                <tr>
-                                    <td>N</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Print a newline</td>
-                                </tr>
-
-                                <tr>
-                                    <td>J</td>
-                                    <td>A</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Get numeric input from user, store in A</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Z</td>
-                                    <td>A</td>
-                                    <td>B</td>
-                                    <td>C</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>For A = B to C, execute following code</td>
-                                </tr>
-
-                                <tr>
-                                    <td>E</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>End of loop, basically jumps to closest Z</td>
-                                </tr>
-
-                                <tr>
-                                    <td>F</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>End of program</td>
-                                </tr>
-
-                                <tr>
-                                    <td>S</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>"Start computing", used at absolute end of progam. Not relevant outside original implementation</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </p>
+                            <tr>
+                                <td>/</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>C = A / B</td>
+                            </tr>
+                            <tr>
+                                <td>;</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>B = A</td>
+                            </tr>
+                            <tr>
+                                <td>SQR</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>B = SQRT(A)</td>
+                            </tr>
+                            <tr>
+                                <td>LOG</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>B =ln(A)</td>
+                            </tr>
+                             <tr>
+                                <td>EXP</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>B =e^A</td>
+                            </tr>
+                            <tr>
+                                <td>SIN</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>B = SINE(A)</td>
+                            </tr>
+                            <tr>
+                                <td>C</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>L1</td>
+                                <td>L2</td>
+                                <td>L3</td>
+                                <td>
+                                    Conditional Jump <br/>
+                                    If(A > B) jump to L1 <br/>
+                                    If(A == B) jump to L2 <br/>
+                                    If(A < B) jump to L3 <br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>T</td>
+                                <td>L</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Jump TO line L</td>
+                            </tr>
+                            <tr>
+                                <td>A</td>
+                                <td>X</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Print "label" X, only way to print a string literal</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>P</td>
+                                <td>A</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Print the value of A</td>
+                            </tr>
+                            <tr>
+                                <td>N</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Print a newline</td>
+                            </tr>
+                            <tr>
+                                <td>J</td>
+                                <td>A</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Get numeric input from user, store in A</td>
+                            </tr>
+                            <tr>
+                                <td>Z</td>
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td></td>
+                                <td></td>
+                                <td>For A = B to C, execute following code</td>
+                            </tr>
+                            <tr>
+                                <td>E</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>End of loop, basically jumps to closest Z</td>
+                            </tr>
+                            <tr>
+                                <td>F</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>End of program</td>
+                            </tr>
+                            <tr>
+                                <td>S</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>"Start computing", used at absolute end of progam. Not relevant outside original implementation</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
