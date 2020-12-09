@@ -35,7 +35,216 @@
                     <h3>Programming DOPE</h3>
 
                     <p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td>Instruction</td>
+                                    <td>Arg 1</td>
+                                    <td>Arg 2</td>
+                                    <td>Arg 3</td>
+                                    <td>Arg 4</td>
+                                    <td>Arg 5</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
 
+                            <tbody>
+                                <tr>
+                                    <td>+</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>C = A + B</td>
+                                </tr>
+
+                                <tr>
+                                    <td>-</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>C = A - B</td>
+                                </tr>
+
+                                <tr>
+                                    <td>-</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>C = A - B</td>
+                                </tr>
+
+                                <tr>
+                                    <td>*</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>C = A * B</td>
+                                </tr>
+                                    
+                                <tr>
+                                    <td>/</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>C = A / B</td>
+                                </tr>
+
+                                <tr>
+                                    <td>;</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>B = A</td>
+                                </tr>
+
+                                <tr>
+                                    <td>SQR</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>B = SQRT(A)</td>
+                                </tr>
+
+                                <tr>
+                                    <td>LOG</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>B =ln(A)</td>
+                                </tr>
+
+                                 <tr>
+                                    <td>EXP</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>B =e^A</td>
+                                </tr>
+
+                                <tr>
+                                    <td>SIN</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>B = SINE(A)</td>
+                                </tr>
+
+                                <tr>
+                                    <td>C</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>L1</td>
+                                    <td>L2</td>
+                                    <td>L3</td>
+                                    <td>
+                                        Conditional Jump <br/>
+                                        If(A > B) jump to L1 <br/>
+                                        If(A == B) jump to L2 <br/>
+                                        If(A < B) jump to L3 <br/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>T</td>
+                                    <td>L</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Jump TO line L</td>
+                                </tr>
+
+                                <tr>
+                                    <td>A</td>
+                                    <td>X</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Print "label" X, only way to print a string literal</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>P</td>
+                                    <td>A</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Print the value of A</td>
+                                </tr>
+
+                                <tr>
+                                    <td>N</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Print a newline</td>
+                                </tr>
+
+                                <tr>
+                                    <td>J</td>
+                                    <td>A</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Get numeric input from user, store in A</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Z</td>
+                                    <td>A</td>
+                                    <td>B</td>
+                                    <td>C</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>For A = B to C, execute following code</td>
+                                </tr>
+
+                                <tr>
+                                    <td>E</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>End of loop, basically jumps to closest Z</td>
+                                </tr>
+
+                                <tr>
+                                    <td>F</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>End of program</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </p>
                 </div>
             </div>
