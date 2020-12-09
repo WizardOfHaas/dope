@@ -7,7 +7,9 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	
+    
+        <script src="./dope.js"></script>
+
 		<style>
 			pre, code{
 				white-space: pre-line;
@@ -18,7 +20,7 @@
 				padding-top: 0px;
 				padding-bottom: 0px;
 
-				height: 200px;
+				height: 250px;
 			}
 
 			.ex pre{
@@ -40,7 +42,7 @@
                 </div>
             </div>
 
-			<div class="row" style="background-color:black;color:grey">
+			<div class="row">
                 <div class="col-md-8 col-sm-12">
                     <div id="term"></div>
                 </div>
@@ -92,8 +94,14 @@
 						<div class="col-md-3">
 							<div class="card card-body bg-dark ex">
 								<pre><code>
-									1 A HELLO
-									2 T 1
+                                    1 ; 10 B
+                                    2 Z A 1 10
+                                    3 P B
+                                    4 - B 1 B
+                                    5 N
+                                    6 E
+                                    7 A BOOM!
+                                    8 F
 								</code></pre>
 
 								<a href="#" class="run-ex">Load Example</a>
@@ -536,17 +544,7 @@
             "v": "VECTOR"
         };
 
-		var lines = [
-			,
-			"; 10 B",
-			"Z A 1 10",
-			"P B",
-			"- B 1 B",
-			"N",
-			"E",
-			"A BOOM!",
-			"F"
-		];
+		var lines = [];
 
 		var loops = [];
 		var sep = " "; //Token seporator, will eventually switch to '
