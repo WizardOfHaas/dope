@@ -152,18 +152,23 @@
                     if(this.loops.length == 0 || this.loops[this.loops.length - 1] != num){ //Is this loop new?
                         this.setValue(a, mask[0], b); //Set out iterator to the initial value
                         this.loops.push(num); //Save over the line number of the loop
+                    }else if(this.vars[a] >= c){
+                        this.loops.pop(); //Remove us from the loop list
+
+                        //Find closest E to jump after...
+                        var e = this.lines.findIndex(function(l, i){return l && l.match(/^E/) && i > num});
+
+                        return e + 1;
                     }else{ //We are iterating
                         this.setValue(a, mask[0], this.getValue(a, mask[0]) + 1); //We can only go up, them's the rules
-    
-                        if(this.vars[a] >= c){ //Is this the last iteration?
-                            this.loops.pop(); //Remove us from the loop list
-                        }
                     }
                 }
             },
             "E": {
                 checks: [],
                 run: function(args, mask){ //End of loop block
+                    console.log(this.loops);
+
                     if(this.loops.length > 0){
                         return this.loops[this.loops.length - 1];
                     }
@@ -178,8 +183,9 @@
             "v": "VECTOR"
         };
     
+        this.lines = [];
         this.loops = [];
-        this.sep = " "; //Token seporator, will eventually switch to '
+        this.sep = "'"; //Token seporator, will eventually switch to '
 
         return this;
     }
@@ -191,18 +197,19 @@
             return l.replace(/^\s*/, "");
         });
 
-        var lines = [];
+        this.lines = [];
 
         code.forEach(function(l){
             var ts = l.split(self.sep);
-            lines[ts.shift()] = ts.join(self.sep);
+            self.lines[ts.shift()] = ts.join(self.sep);
         });
 
         var n = 1;
 
-        while(lines[n] != "F" && n < lines.length){ //Run until FINAL or no more lines
+        while(this.lines[n] != "F" && n < this.lines.length){ //Run until FINAL or no more lines
             console.log("Running Line: " + n);
-            var next = this.runLine(n, lines[n]);
+
+            var next = this.runLine(n, this.lines[n]);
                 
             if(next == -1){
                 break;
