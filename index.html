@@ -379,188 +379,13 @@
 	</body>
 
 	<script>
+		var dope = new DOPE({
+			onOutput: output
+		});
+
 		var term = new Terminal();
 		term.open(document.getElementById("term"));
 		term.write("DOPE-20\r\nReady\r\n\r\n");
-
-		var vars = {
-			"E": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			"F": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			"G": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			"H": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		};
-
-		var ops = {
-			"+": {
-                checks: ["csv", "csv", "sv"],
-                run: function(args, mask){ //Add
-				    var a = getValue(args[0], mask[0]);
-				    var b = getValue(args[1], mask[1]);
-
-				    setValue(args[2], mask[2], a + b);
-			    }
-            },
-			"-": {
-                checks: ["csv", "csv", "sv"],
-                run: function(args, mask){ //Subtract
-				    var a = getValue(args[0], mask[0]);
-				    var b = getValue(args[1], mask[1]);
-
-    				setValue(args[2], mask[2], a - b);
-                }
-			},
-			".": {
-                checks: ["csv", "csv", "sv"],
-                run: function(args, mask){ //Multiply
-				    var a = getValue(args[0], mask[0]);
-				    var b = getValue(args[1], mask[1]);
-
-				    setValue(args[2], mask[2], a * b);
-                }
-			},
-			"/": {
-                checks: ["csv", "csv", "sv"],
-                run: function(args, mask){ //Divide
-				    var a = getValue(args[0], mask[0]);
-				    var b = getValue(args[1], mask[1]);
-
-				    setValue(args[2], mask[2], a / b);
-                }
-			},
-			";": {
-                checks: ["csv", "sv"],
-                run: function(args, mask){ //Set value
-				    var a = getValue(args[0], mask[0]);
-				    setValue(args[1], mask[1], a);
-			    }
-            },
-			"SQR": {
-                checks: ["csv", "sv"],
-                run: function(args, mask){
-				    var a = getValue(args[0], mask[0]);
-				    setValue(args[1], mask[1], Math.sqrt(a));	
-                }
-			},
-			"EXP": {
-                checks: ["csv", "sv"],
-                run: function(args, mask){
-				    var a = getValue(args[0], mask[0]);
-				    setValue(args[1], mask[1], Math.exp(a));	
-                }
-			},
-			"LOG": {
-                checks: ["csv", "sv"],
-                run: function(args, mask){
-				    var a = getValue(args[0], mask[0]);
-				    setValue(args[1], mask[1], Math.log(a));	
-                }
-			},
-			"SIN": {
-                checks: ["csv", "sv"],
-                run: function(args, mask){
-				    var a = getValue(args[0], mask[0]);
-				    setValue(args[1], mask[1], Math.sin(a));	
-                }
-			},
-			"C": {
-                checks: ["csv", "csv", "csv", "csv", "csv"],
-                run: function(args, mask){ //Conditional jump
-				    var a = getValue(args[0], mask[0]);
-				    var b = getValue(args[1], mask[1]);
-
-				    var l1 = getValue(args[2], mask[2]);
-				    var l2 = getValue(args[3], mask[3]);
-				    var l3 = getValue(args[4], mask[4]);
-
-				    if(a > b){
-    					return l1;
-				    }else if(a == b){
-    					return l2;
-	    			}else if(a < b){
-		    			return l3;
-			    	}
-                }
-			},
-			"T": {
-                checks: ["csv"],
-                run: function(args, mask){ //jump To line
-				    var a = getValue(args[0], mask[0]);
-				    return a;
-                }
-			},
-			"P": {
-                checks: ["csv"],
-                run: function(args, mask){ //Print value
-				    var a = getValue(args[0], mask[0]);
-				    output(a + " ");
-                }
-			},
-			"A": {
-                checks: ["l"],
-                run: function(args, mask){ //Print label, aka string literal
-				    var a = getValue(args[0], mask[0]);
-				    output(a);
-                }
-			},
-			"N": {
-                checks: [],
-                run: function(args, mask){ //Print newline
-				    output("\r\n");
-                }
-			},
-			"J": {
-                checks: ["sv"],
-                run: function(args, mask){ //Take keyboard input => var
-				    /*
-                    term.write(" -->> ");
-				    input();
-				    setValue(args[0], mask[0], parseFloat(buffer));
-                    */
-
-                    var n = prompt("Input A Number");
-                    setValue(args[0], mask[0], parseFloat(n));
-                }
-			},
-			"Z": {
-                checks: ["sv", "csv", "csv"],
-                run: function(args, mask, num){ //Attempt at simple for loop
-				    var a = args[0];
-				    var b = getValue(args[1], mask[1]);
-				    var c = getValue(args[2], mask[2]);
-
-    				if(loops.length == 0 || loops[loops.length - 1] != num){ //Is this loop new?
-	    				setValue(a, mask[0], b); //Set out iterator to the initial value
-		    			loops.push(num); //Save over the line number of the loop
-			    	}else{ //We are iterating
-				    	setValue(a, mask[0], getValue(a, mask[0]) + 1); //We can only go up, them's the rules
-
-					    if(vars[a] >= c){ //Is this the last iteration?
-						    loops.pop(); //Remove us from the loop list
-					    }
-				    }
-                }
-			},
-			"E": {
-                checks: [],
-                run: function(args, mask){ //End of loop block
-				    if(loops.length > 0){
-    					return loops[loops.length - 1];
-	    			}
-		    	}
-            }
-		};
-
-        var maskNames = {
-            "l": "LABEL",
-            "c": "CONSTANT",
-            "s": "SCALAR",
-            "v": "VECTOR"
-        };
-
-		var lines = [];
-
-		var loops = [];
-		var sep = " "; //Token seporator, will eventually switch to '
 
 		$(".run-ex").on("click", function(e){
 			var code = $(e.target).closest(".ex").find("code").html()
@@ -571,12 +396,14 @@
 			lines = [];
 
 			code.forEach(function(l){
-				var ts = l.split(sep);
-				lines[ts.shift()] = ts.join(sep);
+				var ts = l.split(dope.sep);
+				lines[ts.shift()] = ts.join(dope.sep);
 			});
 		});
 
 		term.write(" > ");
+
+		var lines = [];
 
 		var buff = ""; //Global buffer
 
@@ -598,14 +425,16 @@
 				lines[ts.shift()] = ts.join(sep);
 			}else if(buff.toUpperCase() == "LIST"){
 				term.write(lines.map(function(d, i){
-					return i + " " + d;
+					return i + dope.sep + d;
 				}).join("\r\n") + "\r\n");
 			}else if(buff.toUpperCase() == "RUN"){
-				await run();
+				await dope.run(lines.map(function(l, i){
+					return i + dope.sep + l;
+				}).join("\n"));
 			}else if(buff.toUpperCase() == "NEW"){
 				lines = [];
 			}else{
-				var n = runLine(0, buff);
+				var n = dope.runLine(0, buff);
 			}
 
 			term.write("\r\n > ");
@@ -638,59 +467,6 @@
 			return data;
 		}
 
-		async function run(){
-			var n = 1;
-
-			while(lines[n] != "F" && n < lines.length){ //Run until FINAL or no more lines
-				console.log("Running Line: " + n);
-				var next = runLine(n, lines[n]);
-					
-				if(next == -1){
-					break;
-				}
-
-				n = next;
-
-                await new Promise(done => setTimeout(() => done(), 50));
-			}
-
-            return;
-		}
-
-		function getValue(token, mask){	
-			if(mask == "c"){ //Deal with const value
-				return parseFloat(token);
-			}else if(mask == "s"){ //Grab a scalar var
-				return vars[token];
-			}else if(mask == "v"){ //Grab a vector... kinda gross...
-				var [t, i] = token.split(/[\[\]]/);
-
-				iMask = makeMask([i])[0];
-				if(iMask == "s"){
-					i = getValue(i, iMask);
-				}
-
-				return vars[t][i];
-			}else if(mask == "l"){
-				return token;
-			}
-		}
-
-		function setValue(token, mask, val){
-			if(mask == "s"){ //Set a scalar
-				vars[token] = val;
-			}else if(mask == "v"){ //Then we have a vector
-				var [t, i] = token.split(/[\[\]]/);
-
-				iMask = makeMask([i])[0];
-				if(iMask == "s"){
-					i = getValue(i, iMask);
-				}
-
-				vars[t][i] = val;
-			}
-		}
-
 		function output(d){
 			term.write("" + d);
 		}
@@ -698,7 +474,7 @@
 		function showVars(){
 			$("#debug").html("<ul>");
 
-			for(const [key, value] of Object.entries(vars)){
+			for(const [key, value] of Object.entries(dope.vars)){
 				if(!key.match(/^[EFGH]$/)){
 					$("#debug").append("<li>" + key + " -> " + value + "</li>");
 				}
@@ -709,70 +485,6 @@
 			});
 
 			$("#debug").append("</ul>");
-		}
-
-		function runLine(num, line){
-			//Split to tokens, should be by ' but using space for now
-			var t = line.split(sep);
-			var op = t.shift();
-
-			if(ops[op]){ //Is this a valid operation?
-				//Lets make a mask...
-				var mask = makeMask(t);
-
-                //Do syntax check here!
-                var checks = ops[op].checks;
-
-                //Do we have the right number of args?
-                if(t.length != checks.length){
-                    error(op + " ACCEPTS " + checks.length + " ARGS", num);
-                    return -1;
-                }
-
-                //Do we have the right kind of args?
-                for(var i = 0; i < checks.length; i++){
-                    var regex = new RegExp("^[" + checks[i] + "]$");
-
-                    if(!mask[i].match(regex)){
-                        error("ARG " + (i + 1) + " TO " + op + " CANNOT BE A " + maskNames[mask[i]], num);
-                        return -1;
-                    }
-                }
-
-				var nextLine = ops[op].run(t, mask, num);
-				showVars();
-
-				if(!nextLine || typeof nextLine !== "number"){
-					nextLine = num + 1;
-					
-					//Deal with non-continous line numbers... :(
-				}else{
-					console.log("Jumping to: " + nextLine);
-				}
-
-				return nextLine;
-			}else{
-				//Throw an error
-				error();
-			}
-		}
-
-		function error(msg = null, line = null){
-			term.write("SYNTAX ERROR" + (line ? ", LINE " + line : "") + (msg ? ": " + msg : ""));
-		}
-
-		function makeMask(args){
-			return args.map(function(t){
-				if(t.match(/^[A-Z][0-9]?$/)){
-					return "s"; //It's a avriable, ops will understand
-				}else if(t.match(/^[0-9\.\-\+]/)){
-					return "c"; //It's a constant... don't use restrictions for now
-				}else if(t.match(/^[EFGH]\[.*\]$/)){
-					return "v" //It's a vector
-				}else{
-					return "l"; //It's a label
-				}
-			});
 		}
 	</script>
 </html>

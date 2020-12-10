@@ -153,7 +153,7 @@
                         this.setValue(a, mask[0], b); //Set out iterator to the initial value
                         this.loops.push(num); //Save over the line number of the loop
                     }else{ //We are iterating
-                        this.setValue(a, mask[0], getValue(a, mask[0]) + 1); //We can only go up, them's the rules
+                        this.setValue(a, mask[0], this.getValue(a, mask[0]) + 1); //We can only go up, them's the rules
     
                         if(this.vars[a] >= c){ //Is this the last iteration?
                             this.loops.pop(); //Remove us from the loop list
@@ -185,6 +185,8 @@
     }
 
     DOPE.prototype.run = async function(buffer){
+        var self = this;
+
         var code = buffer.split("\n").map(function(l){
             return l.replace(/^\s*/, "");
         });
@@ -192,8 +194,8 @@
         var lines = [];
 
         code.forEach(function(l){
-            var ts = l.split(sep);
-            lines[ts.shift()] = ts.join(sep);
+            var ts = l.split(self.sep);
+            lines[ts.shift()] = ts.join(self.sep);
         });
 
         var n = 1;
@@ -216,7 +218,7 @@
 
     DOPE.prototype.runLine = function(num, line){
         //Split to tokens, should be by ' but using space for now
-        var t = line.split(sep);
+        var t = line.split(this.sep);
         var op = t.shift();
 
         if(this.ops[op]){ //Is this a valid operation?
