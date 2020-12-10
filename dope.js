@@ -193,16 +193,7 @@
     DOPE.prototype.run = async function(buffer){
         var self = this;
 
-        var code = buffer.split("\n").map(function(l){
-            return l.replace(/^\s*/, "");
-        });
-
-        this.lines = [];
-
-        code.forEach(function(l){
-            var ts = l.split(self.sep);
-            self.lines[ts.shift()] = ts.join(self.sep);
-        });
+        this.parseBuffer(buffer);
 
         var n = 1;
 
@@ -222,6 +213,23 @@
 
         return;
     };
+
+    DOPE.prototype.parseBuffer = function(buffer){
+        var self = this;
+
+        var code = buffer.split("\n").map(function(l){
+            return l.replace(/^\s*/, "");
+        });
+
+        this.lines = [];
+
+        code.forEach(function(l){
+            var ts = l.split(self.sep);
+            self.lines[ts.shift()] = ts.join(self.sep);
+        });
+
+        return this.lines;
+    }
 
     DOPE.prototype.runLine = function(num, line){
         //Split to tokens, should be by ' but using space for now

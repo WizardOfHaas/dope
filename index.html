@@ -20,7 +20,7 @@
 				padding-top: 0px;
 				padding-bottom: 0px;
 
-				height: 250px;
+				height: 400px;
 			}
 
 			.ex pre{
@@ -75,9 +75,9 @@
                                 <p>The Standard</p>
 
 								<pre><code>
-									1 A HELLO
-									2 T 1
-									3 F
+									1'A'HELLO
+									2'T'1
+									3'F
 								</code></pre>
 
 								<a href="#" class="run-ex">Load Example</a>
@@ -89,13 +89,13 @@
                                 <p>Table of Roots</p>
 
 								<pre><code>
-									1 Z A 1 20
-									2 SQR A B
-									3 P A
-									4 P B
-									5 N
-									6 E
-									7 F
+									1'Z'A'1'20
+									2'SQR'A'B
+									3'P'A
+									4'P'B
+									5'N
+									6'E
+									7'F
 								</code></pre>
 
 								<a href="#" class="run-ex">Load Example</a>
@@ -107,14 +107,14 @@
                                 <p>Countdown Loop</p>
 
 								<pre><code>
-                                    1 ; 10 B
-                                    2 Z A 1 10
-                                    3 P B
-                                    4 - B 1 B
-                                    5 N
-                                    6 E
-                                    7 A BOOM!
-                                    8 F
+                                    1';'10'B
+                                    2'Z'A'1'10
+                                    3'P'B
+                                    4'-'B'1'B
+                                    5'N
+                                    6'E
+                                    7'A'BOOM!
+                                    8'F
 								</code></pre>
 
 								<a href="#" class="run-ex">Load Example</a>
@@ -123,9 +123,26 @@
 
 						<div class="col-md-3">
 							<div class="card card-body bg-dark ex">
+                                <p>Approximate Pi</p>
+
 								<pre><code>
-									1 A HELLO
-									2 T 1
+                                    1'SQR'2'P2
+                                    2'.'2'P2'P2
+                                    3';'2'P
+                                    4'Z'N'2'16
+                                    5'.'2'P'P
+                                    6'/'P2'P'P2
+                                    7'.'P2'P2'P2
+                                    8'-'1'P2'P2
+                                    9'SQR'P2'P2
+                                    10'-'1'P2'P2
+                                    11'.'2'P2'P2
+                                    12'SQR'P2'P2
+                                    13'.'P'P2'P2
+                                    14'P'N
+                                    15'P'P2
+                                    16'N
+                                    17'E
 								</code></pre>
 
 								<a href="#" class="run-ex">Load Example</a>
@@ -141,7 +158,8 @@
 
 					<p>
 						DOPE's syntax is pretty simple, each line is formatted as:<br/>
-						line_number instruction arg1 arg2 arg3 arg4 arg5
+                        <pre><code>line_number'instruction'arg1'arg2'arg3'arg4'arg5</code></pre>
+                        So yeah, as per spec tokens are seperated by a single quote.
 					</p>
 
                     <table class="table table-bordered table-sm">
@@ -376,6 +394,8 @@
                 </div>
             </div>
         </div>
+
+        <input id="file-input" type="file" name="file-input" style="display: none;" />
 	</body>
 
 	<script>
@@ -393,17 +413,18 @@
 					return l.replace(/^\s*/, "");
 				});
 
-			lines = [];
+			dope.lines = [];
 
 			code.forEach(function(l){
 				var ts = l.split(dope.sep);
-				lines[ts.shift()] = ts.join(dope.sep);
-			});
+				dope.lines[ts.shift()] = ts.join(dope.sep);
+            });
 		});
 
 		term.write(" > ");
 
-		var lines = [
+        /*
+        var lines = [
 			,
 			"Z'A'1'10",
 			"Z'B'1'A",
@@ -421,30 +442,9 @@
 			"N",
 			"E",
 			"T'1"
-		];
-
-		lines = [
-			,
-			"SQR'2'P2",
-			".'2'P2'P2",
-			";'2'P",
-
-			"Z'N'2'16",
-			".'2'P'P", //power = 2*power
-			"/'P2'P'P2", //P2 = P2 / power
-			".'P2'P2'P2", //P2 = P2^2
-			"-'1'P2'P2", //P2 = 1 - P2
-			"SQR'P2'P2", //P2 = SQRT(P2)
-			"-'1'P2'P2", //P2 = 1 - P2
-			".'2'P2'P2", //P2 = 2 * P2
-			"SQR'P2'P2", //P2 = SQRT(P2)
-			".'P'P2'P2", //P2 = power * P2
-			"P'N",
-			"P'P2",
-			"N",
-			"E"
-		];
-
+        ];
+        */
+        
 		var buff = ""; //Global buffer
 
 		controlLoop(); //I hate everything about how JS works...
@@ -462,23 +462,64 @@
 			//	...so let's get creative
 			if(buff.match(/^[1-9]/)){ //We have a line number, load it in
 				var ts = buff.split(dope.sep);
-				lines[ts.shift()] = ts.join(dope.sep);
+				dope.lines[ts.shift()] = ts.join(dope.sep);
 			}else if(buff.toUpperCase() == "LIST"){
-				term.write(lines.map(function(d, i){
+				term.write(dope.lines.map(function(d, i){
 					return i + dope.sep + d;
 				}).join("\r\n") + "\r\n");
 			}else if(buff.toUpperCase() == "RUN"){
-				await dope.run(lines.map(function(l, i){
-					return i + dope.sep + l;
-				}).join("\n"));
+				await dope.run(linesToBuffer(dope.lines));
 			}else if(buff.toUpperCase() == "NEW"){
-				lines = [];
-			}else{
+				dope.lines = [];
+			}else if(buff.toUpperCase() == "SAVE"){
+                downloadFile("prog.dope", linesToBuffer(dope.lines));
+            }else if(buff.toUpperCase() == "LOAD"){
+                uploadFile(function(reader){
+                    dope.parseBuffer(reader.result);
+                });
+            }else{
 				var n = dope.runLine(0, buff);
 			}
 
 			term.write("\r\n > ");
 		}
+
+        function linesToBuffer(lines){
+            return lines.map(function(l, i){
+				return i + dope.sep + l;
+			}).join("\n")
+        }
+
+        function downloadFile(filename, text){
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+      
+            element.style.display = 'none';
+            document.body.appendChild(element);
+      
+            element.click();
+      
+            document.body.removeChild(element);
+        }
+
+        function uploadFile(cb){
+            var file = document.getElementById("file-input");
+
+            file.addEventListener("change", function(){
+                var reader = new FileReader();
+
+                reader.onload = function(e){
+                    if(cb){
+                        cb(reader);
+                    }
+                };
+
+                reader.readAsText(this.files[0], "UTF-8");
+            }, true);
+
+            $("#file-input").trigger("click");
+        }
 
 		async function input(cb){
 			buff = "";
